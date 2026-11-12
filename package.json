@@ -1,0 +1,16 @@
+{
+  "name": "playwright-flaky-study",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright test framework (page objects + CI) with a measured flaky-test study",
+  "scripts": {
+    "test": "playwright test",
+    "test:stable": "playwright test --grep-invert @brittle",
+    "test:brittle": "playwright test --grep @brittle",
+    "study": "node scripts/run-study.js",
+    "analyze": "python3 scripts/analyze.py"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}

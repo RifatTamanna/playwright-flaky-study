@@ -1,0 +1,6 @@
+node_modules/
+playwright-report/
+test-results/
+results/last-run.json
+results/*/run-*.json
+__pycache__/

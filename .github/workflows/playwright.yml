@@ -1,0 +1,58 @@
+name: Playwright
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: "Number of repeated runs for the flaky-test study (leave empty to skip the study)"
+        required: false
+        default: ""
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      # The stable suite is the quality gate. The @brittle comparison suite is excluded on purpose.
+      - run: npm run test:stable
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+  study:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.runs != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: pip install pandas matplotlib tabulate
+      - name: Run repeated-run study
+        run: RUNS=${{ github.event.inputs.runs }} WORKERS=4 node scripts/run-study.js
+      - run: python3 scripts/analyze.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: study-results
+          path: |
+            results/summary*.csv
+            results/summary.md
+            results/failure_categories.csv
+            results/failure_rate_per_test.png
+            results/*/meta.json
