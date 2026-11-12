@@ -23,6 +23,11 @@ fs.writeFileSync(
     playwright: pwVersion,
     platform: process.platform,
     retries: 0,
+    throttle: {
+      cpu: Number(process.env.THROTTLE_CPU || 1),
+      latencyMs: Number(process.env.THROTTLE_LATENCY_MS || 0),
+      kbps: Number(process.env.THROTTLE_KBPS || 0),
+    },
   }, null, 2),
 );
 

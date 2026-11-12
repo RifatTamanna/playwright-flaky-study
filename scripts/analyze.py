@@ -49,6 +49,7 @@ def walk(suite, path, rows, label, run_id):
                 "test": name,
                 "group": "brittle" if "@brittle" in name else "stable",
                 "failed": status in ("failed", "timedOut"),
+                "duration_ms": final.get("duration", 0),
                 "error": msg,
             })
     for s in suite.get("suites", []):
@@ -92,6 +93,9 @@ per_group = (
     .reset_index()
 )
 per_group["failure_rate_%"] = (100 * per_group["failures"] / per_group["executions"]).round(2)
+# Mean test duration per label/group: a sanity check that throttling really slowed things down.
+dur = (df.groupby(["label", "group"])["duration_ms"].mean() / 1000).round(2).rename("mean_duration_s").reset_index()
+per_group = per_group.merge(dur, on=["label", "group"])
 per_group.to_csv(os.path.join(RESULTS, "summary_per_group.csv"), index=False)
 
 fails = df[df["failed"]].copy()
@@ -101,6 +105,9 @@ if not fails.empty:
 else:
     cats = pd.DataFrame(columns=["label", "group", "category", "count"])
 cats.to_csv(os.path.join(RESULTS, "failure_categories.csv"), index=False)
+if not fails.empty:
+    fails[["label", "group", "run", "test", "error"]].to_csv(
+        os.path.join(RESULTS, "failures_detail.csv"), index=False)
 
 with open(os.path.join(RESULTS, "summary.md"), "w", encoding="utf-8") as fh:
     fh.write("### Failure rate by suite style and worker setting\n\n")

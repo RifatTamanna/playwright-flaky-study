@@ -1,7 +1,7 @@
 // @brittle: the same behaviours as the stable suite, written the way flaky tests
 // usually are (fixed sleeps, CSS selectors, one-shot reads instead of web-first assertions).
 // They exist so the study can compare the two styles on identical flows.
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../fixtures'); // same fixtures, so throttling applies here too
 
 async function login(page) {
   await page.goto('/');

@@ -1,0 +1,15 @@
+{
+  "label": "throttled-cpu4-lat200",
+  "runs": 30,
+  "workers": "4",
+  "startedAt": "2026-11-12T08:45:58.990Z",
+  "node": "v22.18.0",
+  "playwright": "Version 1.65.0",
+  "platform": "win32",
+  "retries": 0,
+  "throttle": {
+    "cpu": 4,
+    "latencyMs": 200,
+    "kbps": 0
+  }
+}

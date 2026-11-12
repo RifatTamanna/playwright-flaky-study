@@ -1,0 +1,17 @@
+### Failure rate by suite style and worker setting
+
+| label                 | group   |   tests |   executions |   failures |   flaky_tests |   failure_rate_% |   mean_duration_s |
+|:----------------------|:--------|--------:|-------------:|-----------:|--------------:|-----------------:|------------------:|
+| throttled-cpu4-lat200 | brittle |       3 |           90 |          0 |             0 |             0    |              4.85 |
+| throttled-cpu4-lat200 | stable  |       9 |          270 |          0 |             0 |             0    |              2.67 |
+| workers-1             | brittle |       3 |           90 |          0 |             0 |             0    |              2.95 |
+| workers-1             | stable  |       9 |          270 |          0 |             0 |             0    |              1.35 |
+| workers-4             | brittle |       3 |           90 |          1 |             1 |             1.11 |              6.73 |
+| workers-4             | stable  |       9 |          270 |          1 |             1 |             0.37 |              3.71 |
+
+### Failure categories (heuristic)
+
+| label     | group   | category        |   count |
+|:----------|:--------|:----------------|--------:|
+| workers-4 | brittle | timeout (other) |       1 |
+| workers-4 | stable  | timeout (other) |       1 |

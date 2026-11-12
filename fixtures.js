@@ -4,8 +4,15 @@ const { InventoryPage } = require('./pages/InventoryPage');
 const { CartPage } = require('./pages/CartPage');
 const { CheckoutPage } = require('./pages/CheckoutPage');
 const users = require('./data/users');
+const { applyThrottling } = require('./throttle');
 
 exports.test = base.test.extend({
+  // Runs automatically before every test; does nothing unless THROTTLE_* env vars are set.
+  throttling: [async ({ page }, use) => {
+    await applyThrottling(page);
+    await use();
+  }, { auto: true }],
+
   loginPage: async ({ page }, use) => use(new LoginPage(page)),
   inventoryPage: async ({ page }, use) => use(new InventoryPage(page)),
   cartPage: async ({ page }, use) => use(new CartPage(page)),
